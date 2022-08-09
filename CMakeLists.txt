@@ -21,4 +21,4 @@ add_definitions(${LLVM_DEFINITIONS_LIST})
 add_subdirectory ("Compiler")
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/external/llvm-project/llvm)
 
-target_link_libraries(${PROJECT_NAME} ${llvm_libs})
+target_link_libraries(${PROJECT_NAME} ${llvm_libs} ${LLVM_LIBRARIES})
