@@ -29,7 +29,5 @@ int main(int argc, char* argv[])
 }
     input.close();
 
-	cout << "Hello CMake." << endl;
-
 	return 0;
 }

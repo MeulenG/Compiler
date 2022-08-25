@@ -30,6 +30,7 @@ add_definitions(${LLVM_DEFINITIONS_LIST})
 # Include sub-projects.
 add_subdirectory (Compiler)
 add_subdirectory (Lexer)
+add_subdirectory (Parser)
 #add_subdirectory (external/llvm-project/llvm)
 
 # Find the libraries that correspond to the LLVM components
@@ -197,4 +198,4 @@ llvm_map_components_to_libnames(llvm_libs
 )
 
 
-target_link_libraries(${PROJECT_NAME} Compiler Lexer ${llvm_libs})
+target_link_libraries(${PROJECT_NAME} Compiler Lexer Parser ${llvm_libs})
