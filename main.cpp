@@ -1,6 +1,8 @@
 #include "Compiler/Compiler.h"
 #include <llvm/ADT/APFloat.h>
 #include <llvm/IR/IRBuilder.h>
+#include <filesystem>
+
 using namespace std;
 
 
@@ -8,6 +10,10 @@ int main(int argc, char* argv[])
 {
     string filename = argv[1];
     ifstream input;
+
+	// get filename from path
+	std::filesystem::path path(filename);
+    path.filename();
 
     input.open(filename);
     // Check input parameters

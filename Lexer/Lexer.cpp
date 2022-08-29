@@ -5,6 +5,7 @@ using namespace std;
 
 static string check_String_Token;
 static double check_Number_Token;
+
 void Error() {
 	// just an error code for now
 	cout << "Error" << endl;
@@ -15,7 +16,7 @@ enum ProgramTokens
 {
 	// Identifier
 	token_IDENTIFIER = 0, // identifiers
-	// Numbers
+	// Digits
 	token_DIGIT		 = 1, // digit
 	// Math Symbols
 	token_LPARENTHE	 = 2, // (
@@ -77,14 +78,14 @@ MyClass::~MyClass()
 
 }
 
-static int split_Program_To_Tokens() {
+static int split_Program_To_Tokens(bool filename) {
 	static int last_Char = ' '; // last character read
-	
+
 	// Skip any whitespace
 	while (isspace(last_Char)) {
 		last_Char = getchar();
 	}
-	
+
 	if (isalpha(last_Char)) {
 		// identifier or keyword
 		// read until non-alphabetic character
@@ -93,18 +94,79 @@ static int split_Program_To_Tokens() {
 			check_String_Token += last_Char;
 		}
 		// Validate file
-		if (check_String_Token == "Start" || "start", __argc)
+		if (check_String_Token == "start", filename)
 		{
 			return token_SOF;
 		}
 		else { cout << "Can't identify the start of your Haxor Program :(" << endl; }
-		
-		if (check_String_Token == "End" || "end", __argc)
-		{
-			return token_EOF;
+
+		// Check if it is a math symbol
+		if (check_String_Token == "+") {
+			return token_PLUS;
 		}
-		else { cout << "Can't identify the end of your Haxor Program :(" << endl;}
-		// Check keywords
+		else if (check_String_Token == "-") {
+			return token_MINUS;
+		}
+		else if (check_String_Token == "*") {
+			return token_TIMES;
+		}
+		else if (check_String_Token == "/") {
+			return token_DIVIDE;
+		}
+		else if (check_String_Token == "=") {
+			return token_EQUAL;
+		}
+		else if (check_String_Token == ",") {
+			return token_COMMA;
+		}
+		else if (check_String_Token == ":") {
+			return token_COLON;
+		}
+		else if (check_String_Token == ";") {
+			return token_SEMICOLON;
+		}
+		else if (check_String_Token == "(") {
+			return token_LPARENTHE;
+		}
+		else if (check_String_Token == ")") {
+			return token_RPARENTHE;
+		}
+		else if (check_String_Token == "[") {
+			return token_LBRACKET;
+		}
+		else if (check_String_Token == "]") {
+			return token_RBRACKET;
+		}
+		else if (check_String_Token == "{") {
+			return token_LCURLYBRAC;
+		}
+		else if (check_String_Token == "}") {
+			return token_RCURLYBRAC;
+		}
+		else if (check_String_Token == "=>") {
+			return token_ARROW;
+		}
+		else if (check_String_Token == "==") {
+			return token_DEQ;
+		}
+		else if (check_String_Token == "<") {
+			return token_LTH;
+		}
+		else if (check_String_Token == ">") {
+			return token_RTH;
+		}
+		else if (check_String_Token == "&&") {
+			return token_AND;
+		}
+		else if (check_String_Token == "||") {
+			return token_OR;
+		}
+		else if (check_String_Token == "!") {
+			return token_NOT;
+		}
+		else { EXIT_FAILURE; }
+
+		// Check if it is a keyword
 		if (check_String_Token == "if")
 		{
 			return token_IF;
@@ -137,4 +199,32 @@ static int split_Program_To_Tokens() {
 		}
 		else { cout << "Error in Lexer, but i gotta write a better function for error handling" << endl; }
 
+		// Check if it is a digit
+		if (isdigit(last_Char)) {
+			// read until non-digit character
+			check_String_Token = last_Char;
+			while (isdigit(last_Char = getchar())) {
+				check_String_Token += last_Char;
+			}
+			return token_DIGIT;
+		}
+		else { cout << "Error in Lexer" << endl; }
+
+		// Handle comments
+		if (last_Char == '//') {
+			do
+				last_Char = getchar();
+			while (last_Char != EOF && last_Char != '\n' && last_Char != '\r'); // read until newline
+
+			if (last_Char != EOF)
+				return split_Program_To_Tokens(filename); // read next token
+		}
+
+		// Check for end of file. Don't eat the EOF.
+		if (last_Char == EOF)
+			return token_EOF;
+
+		// Otherwise, just return the character as its ascii value
+		return last_Char;
+	}
 }

@@ -5,7 +5,7 @@ cmake_minimum_required (VERSION 3.8)
 
 project ("HaxorCompiler")
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 20)
 set(BUILD_ARCH "-m64")
 set(TARGET_64 ON)
 set (C_COMPILER clang++)
