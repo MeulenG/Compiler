@@ -3,83 +3,16 @@
 
 using namespace std;
 
-static string check_String_Token;
-static double check_Number_Token;
+string check_String_Token;
+double check_Number_Token;
 
 void Error() {
 	// just an error code for now
 	cout << "Error" << endl;
 }
 
-// Tokens for our program
-enum ProgramTokens
-{
-	// Identifier
-	token_IDENTIFIER = 0, // identifiers
-	// Digits
-	token_DIGIT		 = 1, // digit
-	// Math Symbols
-	token_LPARENTHE	 = 2, // (
-	token_RPARENTHE	 = 3, // )
-	token_LBRACKET	 = 4, // [
-	token_RBRACKET	 = 5, // ]
-	token_LCURLYBRAC = 6, // {
-	token_RCURLYBRAC = 7, // }
-	token_EQUAL		 = 8, // =
-	token_COMMA		 = 9, // ,
-	token_COLON		 = 10,// :
-	token_SEMICOLON	 = 11,// ;
-	token_PLUS		 = 12,
-	token_MINUS		 = 13,
-	token_TIMES		 = 14,
-	token_DIVIDE	 = 15,
-	token_ARROW		 = 16, // =>
-	token_DEQ		 = 17, // ==
-	token_LTH		 = 18, // <
-	token_RTH		 = 19, // >
-	token_AND		 = 20, // &&
-	token_OR		 = 21, // ||
-	token_NOT		 = 22, // !
-	// keywords
-	token_IF		 = 23,
-	token_ELSE		 = 24,
-	token_INT		 = 25,
-	token_TRUE		 = 26,
-	token_FALSE		 = 27,
-	token_STRUCT	 = 28,
-	token_ENUM		 = 29,
-	token_FUNCTION	 = 30,
-	token_DEFINE	 = 31,
-	token_USING		 = 32,
-	// string
-	token_QUOTE		 = 33, // ""
-	// Validate file
-	token_SOF		 = 34, // start of file
-	token_EOF		 = 35, // end of file
-};
-
-class MyClass
-{
-public:
-	MyClass();
-	~MyClass();
-
-private:
-
-};
-
-MyClass::MyClass()
-{
-	
-}
-
-MyClass::~MyClass()
-{
-
-}
-
-static int split_Program_To_Tokens(bool filename) {
-	static int last_Char = ' '; // last character read
+int split_Program_To_Tokens(bool filename) {
+	int last_Char = ' '; // last character read
 
 	// Skip any whitespace
 	while (isspace(last_Char)) {
@@ -96,7 +29,7 @@ static int split_Program_To_Tokens(bool filename) {
 		// Validate file
 		if (check_String_Token == "start", filename)
 		{
-			return token_SOF;
+			return token_SOF, filename;
 		}
 		else { cout << "Can't identify the start of your Haxor Program :(" << endl; }
 
