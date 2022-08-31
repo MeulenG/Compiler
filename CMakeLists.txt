@@ -17,7 +17,7 @@ message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
 message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
 
 
-add_executable(${PROJECT_NAME} main.cpp)
+add_executable(${PROJECT_NAME} main.cpp "TypeChecker/TypeChecker.cpp" "TypeChecker/TypeChecker.h")
 
 # Set your project compile flags.
 # E.g. if using the C++ header files
