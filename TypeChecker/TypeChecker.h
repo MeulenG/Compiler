@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TYPECHECKER_H
+#define TYPECHECKER_H
 
 #include <iostream>
 #include <fstream>
@@ -9,4 +10,6 @@
 // Forward declarations
 namespace TypeChecker {
 	class TypeChecker;
-}
+};
+
+#endif

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LEXER_H
+#define LEXER_H
 
 #include <iostream>
 #include <fstream>
@@ -52,3 +53,5 @@ enum ProgramTokens
 	token_SOF = 35, // start of file
 	token_EOF = 36, // end of file
 };
+
+#endif

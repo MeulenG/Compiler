@@ -1,4 +1,5 @@
 #include "Parser.h"
+#include "../Ast/Ast.h"
 
 using namespace std;
 
@@ -27,3 +28,10 @@ int getPrecedence() {
 	}
 	return op_Precedence[current_token];
 }
+
+// LogError* - These functions are used to report errors to the user.
+unique_ptr<Expression> LogError(const char* str) {
+	fprintf(stderr, "Error: %s\n", str);
+	return nullptr;
+}
+

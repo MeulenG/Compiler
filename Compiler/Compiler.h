@@ -1,10 +1,10 @@
 ﻿// Compiler.h : Include file for standard system include files,
 // or project specific include files.
-
-#pragma once
+#ifndef COMPILER_H
+#define COMPILER_H
 
 #include <iostream>
 #include <fstream>
 #include <string>
 
-// TODO: Reference additional headers your program requires here.
+#endif
