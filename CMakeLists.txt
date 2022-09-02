@@ -17,7 +17,7 @@ message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
 message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
 
 
-add_executable(${PROJECT_NAME} main.cpp "TypeChecker/TypeChecker.cpp" "TypeChecker/TypeChecker.h")
+add_executable(${PROJECT_NAME} main.cpp )
 
 # Set your project compile flags.
 # E.g. if using the C++ header files
@@ -28,9 +28,14 @@ separate_arguments(LLVM_DEFINITIONS_LIST NATIVE_COMMAND ${LLVM_DEFINITIONS})
 add_definitions(${LLVM_DEFINITIONS_LIST})
 
 # Include sub-projects.
+add_subdirectory (Ast)
+add_subdirectory (CodeGen)
 add_subdirectory (Compiler)
 add_subdirectory (Lexer)
 add_subdirectory (Parser)
+add_subdirectory (TypeChecker)
+
+
 #add_subdirectory (external/llvm-project/llvm)
 
 # Find the libraries that correspond to the LLVM components
@@ -198,4 +203,4 @@ llvm_map_components_to_libnames(llvm_libs
 )
 
 
-target_link_libraries(${PROJECT_NAME} Compiler Lexer Parser ${llvm_libs})
+target_link_libraries(${PROJECT_NAME} Ast CodeGen Compiler Lexer Parser TypeChecker ${llvm_libs})
