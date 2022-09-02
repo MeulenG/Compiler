@@ -2,12 +2,12 @@ begin HelloWorld.haxor
 
 using System;
 
-begin function()
+begin function() {
     System.Write "Hello World";
-end function
+} end function
 
-begin main()
+begin main() {
     call function();
-end main
+} end main
 
 end HelloWorld.haxor
