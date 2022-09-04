@@ -8,15 +8,13 @@ using namespace std;
 // Instanciate the lexer
 Lexer lexer;
 
-
-
 // Curtok/getNextToken. Curtok is the current token the parser is looking at. getNextToken reads another token from the Lexer and updates Curtok.
 int current_token;
 int getNextToken() {
 	return current_token = lexer.split_Program_To_Tokens();
 }
 
-// Precedence for binary operators.
+// Map Precedence for binary operators.
 map<char, int> op_Precedence = {
 	{'=', 1},
 	{'<', 2},
@@ -26,6 +24,7 @@ map<char, int> op_Precedence = {
 	{'*', 4},
 	{'/', 4}
 };
+
 
 // Function to determine the precedence of the current token.
 int getPrecedence() {
@@ -113,4 +112,110 @@ unique_ptr<Expression> ParseIdentifierExpre() {
 	return make_unique<CallExpression>(identifier_Name, move(args));
 }
 
-// 
+// Primary
+unique_ptr<Expression> ParsePrimary() {
+	switch (current_token)
+	{
+	case '(':
+		return ParseParentExpre();
+	case token_IDENTIFIER:
+		return ParseIdentifierExpre();
+	case token_NUM_LITERAL:
+		return ParseLiteralNumExpre();
+	case token_INT:
+		return ParseIntegersExpre();
+	default:
+		cout << "Expected a    :    '(', identifier, number, number_Int    " << endl;
+		return nullptr;
+	}
+}
+
+// Parse Binary Operators
+unique_ptr<Expression> ParseBinaryOpRHS(int expr_Precedence, unique_ptr<Expression> lhs) {
+	// If this is a binop, find its precedence.
+	while (true)
+	{
+		int token_Precedence = getPrecedence(); // Get the precedence of the current token
+		// if this tokens binary operator binds atleast as tightly as the current binary operator, then we consume, otherwise we dont
+		if (token_Precedence < expr_Precedence)
+		{
+			return lhs; // return the left hand side
+		}
+		// Okay, we know this is a binop.
+		int binOp = current_token;
+		getNextToken(); // Eat binop
+
+		// Parse the primary expression after the binary operator.
+		auto rhs = ParsePrimary();
+		if (!rhs)
+		{
+			return nullptr;
+		}
+
+		// If BinOp binds less tightly with RHS than the operator after RHS, let the pending operator take RHS as its LHS.
+		// Same method as above just for the right-hand-side
+		int next_Precedence = getPrecedence();
+		if (token_Precedence < next_Precedence)
+		{
+			rhs = ParseBinaryOpRHS(token_Precedence + 1, move(rhs));
+			if (!rhs)
+			{
+				return nullptr;
+			}
+		}
+
+		// return the binary expression
+		lhs = make_unique<BinaryExpression>(&lhs, binOp, &rhs);
+	}
+}
+
+// Parse Expression lhs
+unique_ptr<Expression> ParseExpression() {
+	auto lhs = ParsePrimary();
+	
+	if (!lhs)
+	{
+		return nullptr;
+	}
+	return ParseBinaryOpRHS(0, move(lhs));
+}
+
+// Parse Prototype
+unique_ptr<Prototype> ParsePrototype() {
+	// Initialize variables
+	const string identifier_Name = check_String_Token;
+	getNextToken(); // Eat Identifier
+
+	if (current_token != '(')
+	{
+		cout << "Expected a    :    '('    " << endl;
+		return nullptr;
+	}
+	vector<string> arg_Names;
+	while (getNextToken() == token_IDENTIFIER)
+	{
+		arg_Names.push_back(check_String_Token);
+	}
+	if (current_token != ')')
+	{
+		cout << "Expected a    :    ')'    " << endl;
+		return nullptr;
+	}
+	getNextToken(); // Eat ')'
+	return make_unique<Prototype>(identifier_Name, move(arg_Names));
+}
+
+// Parse Function
+unique_ptr<FunctionDefinition> ParseFunction() {
+	getNextToken(); // Eat 'def'
+	auto proto = ParsePrototype();
+	if (!proto)
+	{
+		return nullptr;
+	}
+	if (auto e = ParseExpression())
+	{
+		return make_unique<FunctionDefinition>(move(proto), move(e));
+	}
+	return nullptr;
+}
