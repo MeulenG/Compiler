@@ -2,6 +2,7 @@
 #define AST_H
 
 #include "../Lexer/Lexer.h"
+#include "../CodeGen/CodeGen.h"
 
 using namespace std;
 
@@ -9,15 +10,16 @@ using namespace std;
 class Expression {
 public:
 	virtual ~Expression() {}
+	//virtual Value *codegen() = 0;
 };
 
-// DecimalExpression - Expression class for numeric literals like "1.0"
+// DecimalExpression, Derived class - Expression class for numeric literals like "1.0"
 class decimal_Number_Expression : public Expression {
-	
 	double decimal_Value;
 	
 public:
 		decimal_Number_Expression(double decimal_Value) : decimal_Value(decimal_Value) {}
+		//Value* codegen() override;
 };
 
 
@@ -37,11 +39,11 @@ public:
 
 // BinaryExpression - Expression class for binary operators like "+"
 class BinaryExpression : public Expression {
-	Expression* Left;
-	Expression* Right;
-	char Op;
+	char op;
+	unique_ptr<Expression> LHS, RHS;
+
 public:
-	BinaryExpression(Expression* Left, char Op, Expression* Right) : Left(Left), Right(Right), Op(Op) {}
+	BinaryExpression(char op, unique_ptr<Expression> LHS, unique_ptr<Expression> RHS) : op(op), LHS(move(LHS)), RHS(move(RHS)) {}
 };
 
 // CallExpression - Expression class for function calls
@@ -58,14 +60,17 @@ class Prototype {
 	vector<string> Args;
 public:
 	Prototype(const string& Name, const vector<string> &Args) : Name(Name), Args(Args) {}
+	
+	const string& getName() const { return Name; }
 };
 
 // FunctionDefinition - This class represents a function definition itself.
 class FunctionDefinition {
-	Prototype* Proto;
-	vector<Expression*> Body;
+	unique_ptr<Prototype> Proto;
+	unique_ptr<Expression> Body;
+	
 public:
-	FunctionDefinition(Prototype* Proto, const vector<Expression*>& Body) : Proto(Proto), Body(Body) {}
+	FunctionDefinition(unique_ptr<Prototype> Proto, unique_ptr<Expression> Body) : Proto(move(Proto)), Body(move(Body)) {}
 };
 
 #endif

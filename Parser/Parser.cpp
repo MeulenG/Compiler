@@ -1,7 +1,8 @@
 #include "Parser.h"
 #include "../Ast/Ast.h"
 #include "../Lexer/Lexer.h"
-
+#include "../Ast/Ast.h"
+#include "../CodeGen/CodeGen.h"
 
 using namespace std;
 
@@ -55,7 +56,9 @@ unique_ptr<Expression> ParseIntegersExpre() {
 
 // parenexpr := '(' expression ')'
 unique_ptr<Expression> ParseParentExpre() {
+	// Make an instance of ParseExpression
 	unique_ptr<Expression> ParseExpression();
+	// Eat '('
 	getNextToken();
 	auto V = ParseExpression();
 	if (!V)
@@ -131,7 +134,7 @@ unique_ptr<Expression> ParsePrimary() {
 }
 
 // Parse Binary Operators
-unique_ptr<Expression> ParseBinaryOpRHS(int expr_Precedence, unique_ptr<Expression> lhs) {
+unique_ptr<Expression> ParseBinaryOpRHS(int expr_Precedence, unique_ptr<Expression> LHS) {
 	// If this is a binop, find its precedence.
 	while (true)
 	{
@@ -139,7 +142,7 @@ unique_ptr<Expression> ParseBinaryOpRHS(int expr_Precedence, unique_ptr<Expressi
 		// if this tokens binary operator binds atleast as tightly as the current binary operator, then we consume, otherwise we dont
 		if (token_Precedence < expr_Precedence)
 		{
-			return lhs; // return the left hand side
+			return LHS; // return the left hand side
 		}
 		// Okay, we know this is a binop.
 		int binOp = current_token;
@@ -165,7 +168,7 @@ unique_ptr<Expression> ParseBinaryOpRHS(int expr_Precedence, unique_ptr<Expressi
 		}
 
 		// return the binary expression
-		lhs = make_unique<BinaryExpression>(&lhs, binOp, &rhs);
+		LHS = make_unique<BinaryExpression>(binOp, move(LHS), move(rhs));
 	}
 }
 
@@ -207,15 +210,20 @@ unique_ptr<Prototype> ParsePrototype() {
 
 // Parse Function
 unique_ptr<FunctionDefinition> ParseFunction() {
-	getNextToken(); // Eat 'def'
+	getNextToken(); // Eat 'begin'
+	getNextToken(); // Eat 'function'
 	auto proto = ParsePrototype();
 	if (!proto)
 	{
 		return nullptr;
 	}
-	if (auto e = ParseExpression())
+	if (auto body = ParseExpression())
 	{
-		return make_unique<FunctionDefinition>(move(proto), move(e));
+		return make_unique<FunctionDefinition>(move(proto), move(body));
 	}
 	return nullptr;
 }
+
+///////////////////////////////////
+// Parse Top Level Expression
+///////////////////////////////////
