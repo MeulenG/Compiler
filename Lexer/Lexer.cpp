@@ -1,8 +1,5 @@
 #include "Lexer.h"
 
-
-using namespace std;
-
 void Error() {
 	// just an error code for now
 	cout << "Error" << endl;
@@ -172,3 +169,4 @@ map<string, int> identifiers = {
 	{"begin", Lexer_Token::token_Kind::token_BEGIN},
 	{"end", Lexer_Token::token_Kind::token_END},
 };
+
