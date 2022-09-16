@@ -17,10 +17,6 @@ bool check_File(bool filename_Is_Valid) {
 	else { return true; }
 }
 
-
-
-
-
 // Pretty Trivial
 bool is_Space(char c) noexcept {
 	switch (c)
@@ -131,188 +127,48 @@ bool is_Identifier_Char(char c) {
 
 // Map math symbols
 map<char, int> token_Map = {
-	{'+', token_PLUS},
-	{'-', token_MINUS},
-	{'*', token_TIMES},
-	{'/', token_DIVIDE},
-	{'(', token_LPARENTHE},
-	{')', token_RPARENTHE},
-	{'[', token_LBRACKET},
-	{']', token_RBRACKET},
-	{'{', token_LCURLYBRAC},
-	{'}', token_RCURLYBRAC},
-	{'=', token_EQUAL},
-	{',', token_COMMA},
-	{':', token_COLON},
-	{';', token_SEMICOLON},
-	{'<', token_LTH},
-	{'>', token_RTH},
-	{'!', token_NOT},
-	{'&', token_AND},
-	{'|', token_OR},
+	{'+', Lexer_Token::token_Kind::token_PLUS},
+	{'-', Lexer_Token::token_Kind::token_MINUS},
+	{'*', Lexer_Token::token_Kind::token_TIMES},
+	{'/', Lexer_Token::token_Kind::token_DIVIDE},
+	{'(', Lexer_Token::token_Kind::token_LPARENTHE},
+	{')', Lexer_Token::token_Kind::token_RPARENTHE},
+	{'[', Lexer_Token::token_Kind::token_LBRACKET},
+	{']', Lexer_Token::token_Kind::token_RBRACKET},
+	{'{', Lexer_Token::token_Kind::token_LCURLYBRAC},
+	{'}', Lexer_Token::token_Kind::token_RCURLYBRAC},
+	{'=', Lexer_Token::token_Kind::token_EQUAL},
+	{',', Lexer_Token::token_Kind::token_COMMA},
+	{':', Lexer_Token::token_Kind::token_COLON},
+	{';', Lexer_Token::token_Kind::token_SEMICOLON},
+	{'<', Lexer_Token::token_Kind::token_LTH},
+	{'>', Lexer_Token::token_Kind::token_RTH},
+	{'!', Lexer_Token::token_Kind::token_NOT},
+	{'&&', Lexer_Token::token_Kind::token_AND},
+	{'||',Lexer_Token::token_Kind::token_OR},
 };
 
 // Map keywords
 map<string, int> keyword_Map = {
-	{"if", token_IF},
-	{"else", token_ELSE},
-	{"while", token_WHILE},
-	{"return", token_RETURN},
-	{"int", token_INT},
-	{"float", token_FLOAT},
-	{"true", token_TRUE},
-	{"false", token_FALSE},
-	{"struct", token_STRUCT},
-	{"start", token_SOF},
-	{"end", token_EOF},
+	{"if", Lexer_Token::token_Kind::token_IF},
+	{"else", Lexer_Token::token_Kind::token_ELSE},
+	{"while", Lexer_Token::token_Kind::token_WHILE},
+	{"return", Lexer_Token::token_Kind::token_RETURN},
+	{"int", Lexer_Token::token_Kind::token_INT},
+	{"float", Lexer_Token::token_Kind::token_FLOAT},
+	{"true", Lexer_Token::token_Kind::token_TRUE},
+	{"false", Lexer_Token::token_Kind::token_FALSE},
+	{"struct", Lexer_Token::token_Kind::token_STRUCT},
+	{"start", Lexer_Token::token_Kind::token_SOF},
+	{"end", Lexer_Token::token_Kind::token_EOF},
 };
 
-
-
-
-int split_Program_To_Tokens() {
-	int last_Char = ' '; // last character read
-
-	// Skip any whitespace
-	while (isspace(last_Char)) {
-		last_Char = getchar();
-	}
-	
-
-	if (isalpha(last_Char)) {
-		// identifier or keyword
-		// read until non-alphabetic character
-		check_String_Token = last_Char;
-		while (isalnum(last_Char = getchar())) {
-			check_String_Token += last_Char;
-		}
-
-		// Check if it is a math symbol
-		if (check_String_Token == "+") {
-			return token_PLUS;
-		}
-		else if (check_String_Token == "-") {
-			return token_MINUS;
-		}
-		else if (check_String_Token == "*") {
-			return token_TIMES;
-		}
-		else if (check_String_Token == "/") {
-			return token_DIVIDE;
-		}
-		else if (check_String_Token == "=") {
-			return token_EQUAL;
-		}
-		else if (check_String_Token == ",") {
-			return token_COMMA;
-		}
-		else if (check_String_Token == ":") {
-			return token_COLON;
-		}
-		else if (check_String_Token == ";") {
-			return token_SEMICOLON;
-		}
-		else if (check_String_Token == "(") {
-			return token_LPARENTHE;
-		}
-		else if (check_String_Token == ")") {
-			return token_RPARENTHE;
-		}
-		else if (check_String_Token == "[") {
-			return token_LBRACKET;
-		}
-		else if (check_String_Token == "]") {
-			return token_RBRACKET;
-		}
-		else if (check_String_Token == "{") {
-			return token_LCURLYBRAC;
-		}
-		else if (check_String_Token == "}") {
-			return token_RCURLYBRAC;
-		}
-		else if (check_String_Token == "=>") {
-			return token_ARROW;
-		}
-		else if (check_String_Token == "==") {
-			return token_DEQ;
-		}
-		else if (check_String_Token == "<") {
-			return token_LTH;
-		}
-		else if (check_String_Token == ">") {
-			return token_RTH;
-		}
-		else if (check_String_Token == "&&") {
-			return token_AND;
-		}
-		else if (check_String_Token == "||") {
-			return token_OR;
-		}
-		else if (check_String_Token == "!") {
-			return token_NOT;
-		}
-		else { EXIT_FAILURE; }
-
-		// Check if it is a keyword
-		if (check_String_Token == "if")
-		{
-			return token_IF;
-		}
-		else if (check_String_Token == "else")
-		{
-			return token_ELSE;
-		}
-		else if (check_String_Token == "int") {
-			return token_INT;
-		}
-		else if (check_String_Token == "true") {
-			return token_TRUE;
-		}
-		else if (check_String_Token == "false")
-		{
-			return token_FALSE;
-		}
-		else if (check_String_Token == "enum") {
-			return token_ENUM;
-		}
-		else if (check_String_Token == "function") {
-			return token_FUNCTION;
-		}
-		else if (check_String_Token == "define") {
-			return token_DEFINE;
-		}
-		else if (check_String_Token == "using") {
-			return token_USING;
-		}
-		else { cout << "Error in Lexer, but i gotta write a better function for error handling" << endl; }
-
-		// Check if it is a digit
-		if (isdigit(last_Char)) {
-			// read until non-digit character
-			check_String_Token = last_Char;
-			while (isdigit(last_Char = getchar())) {
-				check_String_Token += last_Char;
-			}
-			return token_DIGIT;
-		}
-		else { cout << "Error in Lexer" << endl; }
-
-		// Handle comments
-		if (last_Char == '//') {
-			do
-				last_Char = getchar();
-			while (last_Char != EOF && last_Char != '\n' && last_Char != '\r'); // read until newline
-
-			if (last_Char != EOF)
-				return split_Program_To_Tokens(); // read next token
-		}
-
-		// Check for end of file. Don't eat the EOF.
-		if (last_Char == EOF)
-			return token_EOF;
-
-		// Otherwise, just return the character as its ascii value
-		return last_Char;
-	}
-	
-}
+// Map Identifiers
+map<string, int> identifiers = {
+	{"define", Lexer_Token::token_Kind::token_DEFINE},
+	{"enum", Lexer_Token::token_Kind::token_ENUM},
+	{"function", Lexer_Token::token_Kind::token_FUNCTION},
+	{"using", Lexer_Token::token_Kind::token_USING},
+	{"begin", Lexer_Token::token_Kind::token_BEGIN},
+	{"end", Lexer_Token::token_Kind::token_END},
+};
