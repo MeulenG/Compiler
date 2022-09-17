@@ -2,12 +2,15 @@ begin HelloWorld.haxor
 
 using System;
 
-begin function() {
-    System.Write "Hello World";
-} end function
+begin function hello_World() {
+    
+    begin if (2<4) {
+	print("Hello, World!");
+    } end
+} end
 
 begin main() {
     call function();
-} end main
+} end
 
-end HelloWorld.haxor
+end
