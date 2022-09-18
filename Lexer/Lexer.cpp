@@ -170,3 +170,162 @@ map<string, int> identifiers = {
 	{"end", Lexer_Token::token_Kind::token_END},
 };
 
+
+Lexer_Token Lexer::atom(Lexer_Token::token_Kind kind) noexcept
+{
+	return Lexer_Token(kind, m_begin++, 1);
+}
+
+Lexer_Token Lexer::next_Token() noexcept
+{
+	while (is_Space)
+	{
+		switch (peek()) {
+			// In case of a NULL Terminator
+		case '\0':
+			return Lexer_Token(Lexer_Token::token_Kind::token_EOF, m_begin, 1);
+		default:
+			return atom(Lexer_Token::token_Kind::token_ERROR);
+			// In case of an Identifier Character
+		case 'a':
+		case 'b':
+		case 'c':
+		case 'd':
+		case 'e':
+		case 'f':
+		case 'g':
+		case 'h':
+		case 'i':
+		case 'j':
+		case 'k':
+		case 'l':
+		case 'm':
+		case 'n':
+		case 'o':
+		case 'p':
+		case 'q':
+		case 'r':
+		case 's':
+		case 't':
+		case 'u':
+		case 'v':
+		case 'w':
+		case 'x':
+		case 'y':
+		case 'z':
+		case 'A':
+		case 'B':
+		case 'C':
+		case 'D':
+		case 'E':
+		case 'F':
+		case 'G':
+		case 'H':
+		case 'I':
+		case 'J':
+		case 'K':
+		case 'L':
+		case 'M':
+		case 'N':
+		case 'O':
+		case 'P':
+		case 'Q':
+		case 'R':
+		case 'S':
+		case 'T':
+		case 'U':
+		case 'V':
+		case 'W':
+		case 'X':
+		case 'Y':
+		case 'Z':
+			return Lexer_Token::token_Kind::token_IDENTIFIER;
+		case '0':
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9':
+			return Lexer_Token::token_Kind::token_DIGIT;
+		case '(':
+			return atom(Lexer_Token::token_Kind::token_LPARENTHE);
+		case ')':
+			return atom(Lexer_Token::token_Kind::token_RPARENTHE);
+		case '[':
+			return atom(Lexer_Token::token_Kind::token_LBRACKET);
+		case ']':
+			return atom(Lexer_Token::token_Kind::token_RBRACKET);
+		case '{':
+			return atom(Lexer_Token::token_Kind::token_LCURLYBRAC);
+		case '}':
+			return atom(Lexer_Token::token_Kind::token_RCURLYBRAC);
+		case '<':
+			return atom(Lexer_Token::token_Kind::token_LTH);
+		case '>':
+			return atom(Lexer_Token::token_Kind::token_RTH);
+		case '=':
+			return atom(Lexer_Token::token_Kind::token_EQUAL);
+		case '+':
+			return atom(Lexer_Token::token_Kind::token_PLUS);
+		case '-':
+			return atom(Lexer_Token::token_Kind::token_MINUS);
+		case '*':
+			return atom(Lexer_Token::token_Kind::token_TIMES);
+		case '/':
+			return   Lexer_Token::token_Kind::token_COMMENT;
+			//case '#':
+			//	return atom(Token::Kind::Hash);
+			//case '.':
+			//	return atom(Token::Kind::Dot);
+		case ',':
+			return atom(Lexer_Token::token_Kind::token_COMMA);
+		case ':':
+			return atom(Lexer_Token::token_Kind::token_COLON);
+		case ';':
+			return atom(Lexer_Token::token_Kind::token_SEMICOLON);
+			//case '\'':
+			//	return atom(Token::Kind::SingleQuote);
+		case '"':
+			return atom(Lexer_Token::token_Kind::token_QUOTE);
+		}
+	}
+}
+
+
+// Identifier 
+Lexer_Token Lexer::Identifier() noexcept 
+{
+	const char* begin = m_begin;
+	
+	// get char
+	get();
+	
+	// while char is an identifier, peek and if it is, we get that shit
+	while (is_Identifier_Char(peek()))
+	{
+		get();
+	}
+	return Lexer_Token(Lexer_Token::token_Kind::token_IDENTIFIER, begin, m_begin);
+}
+
+// Digit
+Lexer_Token Lexer::Number() noexcept
+{
+	const char* begin = m_begin;
+
+	// get char
+	get();
+
+	// while char is a digit, peek and if it is, we get that shit
+	while (is_Digit(peek()))
+	{
+		get();
+	}
+	return Lexer_Token(Lexer_Token::token_Kind::token_DIGIT, begin, m_begin);
+}
+
+// Comment

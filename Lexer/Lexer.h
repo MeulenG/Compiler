@@ -99,6 +99,10 @@ public:
 	// Validate file
 	token_SOF = 43, // start of file
 	token_EOF = 44, // end of file
+	// Error
+	token_ERROR = 45,
+	// Comments
+	token_COMMENT = 46,
 };
 		
 	Lexer_Token(token_Kind kind) noexcept : m_kind { kind } {}
@@ -137,6 +141,17 @@ public:
 		return is(k1) || is(k2); 
 	}
 
+	// Template for the kind
+	template <typename... Ts>
+	bool is_One_Of(token_Kind k1, token_Kind k2, Ts... ks) const noexcept
+	{
+		return is(k1) || is(k2, ks...);
+	}
+
+	string_view lexeme() const noexcept
+	{
+		return m_lexeme;
+	}
 	
 	void lexeme(string_view lexeme) noexcept 
 	{
@@ -151,21 +166,32 @@ private:
 class Lexer
 {
 public:
-	Lexer();
+	Lexer(const char* begin) noexcept : m_begin{ begin } {}
+
+	Lexer_Token next_Token() noexcept;
+	
 	~Lexer();
-
+	
 private:
+	Lexer_Token Identifier() noexcept;
+	
+	Lexer_Token Number() noexcept;
+	
+	Lexer_Token comments() noexcept;
+	
+	Lexer_Token atom(Lexer_Token::token_Kind) noexcept;
+	
+	char peek() const noexcept
+	{
+		return *m_begin;
+	}
+	
+	char get() const noexcept 
+	{
+		return *m_begin;
+	}
 
+	const char* m_begin = nullptr; 
 };
-
-Lexer::Lexer()
-{
-}
-
-Lexer::~Lexer()
-{
-}
-
-
 
 #endif
