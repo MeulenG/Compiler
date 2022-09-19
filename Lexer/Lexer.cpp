@@ -11,7 +11,7 @@ bool check_File(bool filename_Is_Valid) {
 	{
 		Error();
 	}
-	else { return true; }
+	return true;
 }
 
 // Pretty Trivial
@@ -43,6 +43,15 @@ bool is_Digit(char c) {
 	case '7':
 	case '8':
 	case '9':
+		return true;
+	default:
+		return false;
+	}
+}
+
+bool is_decimal(char c) noexcept {
+	switch (c) {
+	case '.':
 		return true;
 	default:
 		return false;
@@ -123,53 +132,53 @@ bool is_Identifier_Char(char c) {
 }
 
 // Map math symbols
-map<char, int> token_Map = {
-	{'+', Lexer_Token::token_Kind::token_PLUS},
-	{'-', Lexer_Token::token_Kind::token_MINUS},
-	{'*', Lexer_Token::token_Kind::token_TIMES},
-	{'/', Lexer_Token::token_Kind::token_DIVIDE},
-	{'(', Lexer_Token::token_Kind::token_LPARENTHE},
-	{')', Lexer_Token::token_Kind::token_RPARENTHE},
-	{'[', Lexer_Token::token_Kind::token_LBRACKET},
-	{']', Lexer_Token::token_Kind::token_RBRACKET},
-	{'{', Lexer_Token::token_Kind::token_LCURLYBRAC},
-	{'}', Lexer_Token::token_Kind::token_RCURLYBRAC},
-	{'=', Lexer_Token::token_Kind::token_EQUAL},
-	{',', Lexer_Token::token_Kind::token_COMMA},
-	{':', Lexer_Token::token_Kind::token_COLON},
-	{';', Lexer_Token::token_Kind::token_SEMICOLON},
-	{'<', Lexer_Token::token_Kind::token_LTH},
-	{'>', Lexer_Token::token_Kind::token_RTH},
-	{'!', Lexer_Token::token_Kind::token_NOT},
-	{'&&', Lexer_Token::token_Kind::token_AND},
-	{'||',Lexer_Token::token_Kind::token_OR},
-};
+//map<Lexer_Token::token_Kind, string> token_Map = {
+//	{'+', Lexer_Token::token_Kind::AND},
+//	{'-', Lexer_Token::token_Kind::token_MINUS},
+//	{'*', Lexer_Token::token_Kind::token_TIMES},
+//	{'/', Lexer_Token::token_Kind::token_DIVIDE},
+//	{'(', Lexer_Token::token_Kind::token_LPARENTHE},
+//	{')', Lexer_Token::token_Kind::token_RPARENTHE},
+//	{'[', Lexer_Token::token_Kind::token_LBRACKET},
+//	{']', Lexer_Token::token_Kind::token_RBRACKET},
+//	{'{', Lexer_Token::token_Kind::token_LCURLYBRAC},
+//	{'}', Lexer_Token::token_Kind::token_RCURLYBRAC},
+//	{'=', Lexer_Token::token_Kind::token_EQUAL},
+//	{',', Lexer_Token::token_Kind::token_COMMA},
+//	{':', Lexer_Token::token_Kind::token_COLON},
+//	{';', Lexer_Token::token_Kind::token_SEMICOLON},
+//	{'<', Lexer_Token::token_Kind::token_LTH},
+//	{'>', Lexer_Token::token_Kind::token_RTH},
+//	{'!', Lexer_Token::token_Kind::token_NOT},
+//	{'&&', Lexer_Token::token_Kind::token_AND},
+//	{'||',Lexer_Token::token_Kind::token_OR},
+//};
 
 // Map keywords
-map<string, int> keyword_Map = {
-	{"if", Lexer_Token::token_Kind::token_IF},
-	{"else", Lexer_Token::token_Kind::token_ELSE},
-	{"while", Lexer_Token::token_Kind::token_WHILE},
-	{"return", Lexer_Token::token_Kind::token_RETURN},
-	{"int", Lexer_Token::token_Kind::token_INT},
-	{"float", Lexer_Token::token_Kind::token_FLOAT},
-	{"true", Lexer_Token::token_Kind::token_TRUE},
-	{"false", Lexer_Token::token_Kind::token_FALSE},
-	{"struct", Lexer_Token::token_Kind::token_STRUCT},
-	{"start", Lexer_Token::token_Kind::token_SOF},
-	{"end", Lexer_Token::token_Kind::token_EOF},
-};
-
-// Map Identifiers
-map<string, int> identifiers = {
-	{"define", Lexer_Token::token_Kind::token_DEFINE},
-	{"enum", Lexer_Token::token_Kind::token_ENUM},
-	{"function", Lexer_Token::token_Kind::token_FUNCTION},
-	{"using", Lexer_Token::token_Kind::token_USING},
-	{"begin", Lexer_Token::token_Kind::token_BEGIN},
-	{"end", Lexer_Token::token_Kind::token_END},
-};
-
+//map<string, int> keyword_Map = {
+//	{"if", Lexer_Token::token_Kind::token_IF},
+//	{"else", Lexer_Token::token_Kind::token_ELSE},
+//	{"while", Lexer_Token::token_Kind::token_WHILE},
+//	{"return", Lexer_Token::token_Kind::token_RETURN},
+//	{"int", Lexer_Token::token_Kind::token_INT},
+//	{"float", Lexer_Token::token_Kind::token_FLOAT},
+//	{"true", Lexer_Token::token_Kind::token_TRUE},
+//	{"false", Lexer_Token::token_Kind::token_FALSE},
+//	{"struct", Lexer_Token::token_Kind::token_STRUCT},
+//	{"start", Lexer_Token::token_Kind::token_SOF},
+//	{"end", Lexer_Token::token_Kind::token_EOF},
+//};
+//
+//// Map Identifiers
+//map<string, int> identifiers = {
+//	{"define", Lexer_Token::token_Kind::token_DEFINE},
+//	{"enum", Lexer_Token::token_Kind::token_ENUM},
+//	{"function", Lexer_Token::token_Kind::token_FUNCTION},
+//	{"using", Lexer_Token::token_Kind::token_USING},
+//	{"begin", Lexer_Token::token_Kind::token_BEGIN},
+//	{"end", Lexer_Token::token_Kind::token_END},
+//};
+//
 
 Lexer_Token Lexer::atom(Lexer_Token::token_Kind kind) noexcept
 {
@@ -178,14 +187,14 @@ Lexer_Token Lexer::atom(Lexer_Token::token_Kind kind) noexcept
 
 Lexer_Token Lexer::next_Token() noexcept
 {
-	while (is_Space)
+	while (is_Space(peek())) get();
 	{
 		switch (peek()) {
 			// In case of a NULL Terminator
 		case '\0':
-			return Lexer_Token(Lexer_Token::token_Kind::token_EOF, m_begin, 1);
+			return Lexer_Token(Lexer_Token::token_Kind::END, m_begin, 1);
 		default:
-			return atom(Lexer_Token::token_Kind::token_ERROR);
+			return atom(Lexer_Token::token_Kind::UNEXPECTED);
 			// In case of an Identifier Character
 		case 'a':
 		case 'b':
@@ -239,7 +248,7 @@ Lexer_Token Lexer::next_Token() noexcept
 		case 'X':
 		case 'Y':
 		case 'Z':
-			return Lexer_Token::token_Kind::token_IDENTIFIER;
+			return Lexer_Token::token_Kind::Identifier;
 		case '0':
 		case '1':
 		case '2':
@@ -250,47 +259,43 @@ Lexer_Token Lexer::next_Token() noexcept
 		case '7':
 		case '8':
 		case '9':
-			return Lexer_Token::token_Kind::token_DIGIT;
+			return Lexer_Token::token_Kind::Number;
 		case '(':
-			return atom(Lexer_Token::token_Kind::token_LPARENTHE);
+			return atom(Lexer_Token::token_Kind::LPAREN);
 		case ')':
-			return atom(Lexer_Token::token_Kind::token_RPARENTHE);
+			return atom(Lexer_Token::token_Kind::RPAREN);
 		case '[':
-			return atom(Lexer_Token::token_Kind::token_LBRACKET);
+			return atom(Lexer_Token::token_Kind::LSQUAREBRAC);
 		case ']':
-			return atom(Lexer_Token::token_Kind::token_RBRACKET);
+			return atom(Lexer_Token::token_Kind::RSQUAREBRAC);
 		case '{':
-			return atom(Lexer_Token::token_Kind::token_LCURLYBRAC);
+			return atom(Lexer_Token::token_Kind::LCURLYBRAC);
 		case '}':
-			return atom(Lexer_Token::token_Kind::token_RCURLYBRAC);
+			return atom(Lexer_Token::token_Kind::RCURLYBRAC);
 		case '<':
-			return atom(Lexer_Token::token_Kind::token_LTH);
+			return atom(Lexer_Token::token_Kind::ARROW_LEFT);
 		case '>':
-			return atom(Lexer_Token::token_Kind::token_RTH);
+			return atom(Lexer_Token::token_Kind::ARROW_RIGHT);
 		case '=':
-			return atom(Lexer_Token::token_Kind::token_EQUAL);
+			return atom(Lexer_Token::token_Kind::EQUAL);
 		case '+':
-			return atom(Lexer_Token::token_Kind::token_PLUS);
+			return atom(Lexer_Token::token_Kind::PLUS);
 		case '-':
-			return atom(Lexer_Token::token_Kind::token_MINUS);
+			return atom(Lexer_Token::token_Kind::MINUS);
 		case '*':
-			return atom(Lexer_Token::token_Kind::token_TIMES);
+			return atom(Lexer_Token::token_Kind::MULTIPLY);
 		case '/':
-			return   Lexer_Token::token_Kind::token_COMMENT;
-			//case '#':
-			//	return atom(Token::Kind::Hash);
-			//case '.':
-			//	return atom(Token::Kind::Dot);
+			return atom(Lexer_Token::token_Kind::Comment);
 		case ',':
-			return atom(Lexer_Token::token_Kind::token_COMMA);
+			return atom(Lexer_Token::token_Kind::Comma);
 		case ':':
-			return atom(Lexer_Token::token_Kind::token_COLON);
+			return atom(Lexer_Token::token_Kind::Colon);
 		case ';':
-			return atom(Lexer_Token::token_Kind::token_SEMICOLON);
-			//case '\'':
-			//	return atom(Token::Kind::SingleQuote);
+			return atom(Lexer_Token::token_Kind::SemiColon);
 		case '"':
-			return atom(Lexer_Token::token_Kind::token_QUOTE);
+			return atom(Lexer_Token::token_Kind::DoubleQuote);
+		case '\'':
+			return atom(Lexer_Token::token_Kind::SingleQuote);
 		}
 	}
 }
@@ -309,7 +314,7 @@ Lexer_Token Lexer::Identifier() noexcept
 	{
 		get();
 	}
-	return Lexer_Token(Lexer_Token::token_Kind::token_IDENTIFIER, begin, m_begin);
+	return Lexer_Token(Lexer_Token::token_Kind::Identifier, begin, m_begin);
 }
 
 // Digit
@@ -321,11 +326,81 @@ Lexer_Token Lexer::Number() noexcept
 	get();
 
 	// while char is a digit, peek and if it is, we get that shit
-	while (is_Digit(peek()))
+	while (is_Digit(peek()) || is_decimal(peek())) get();
 	{
 		get();
 	}
-	return Lexer_Token(Lexer_Token::token_Kind::token_DIGIT, begin, m_begin);
+	return Lexer_Token(Lexer_Token::token_Kind::Number, begin, m_begin);
 }
 
 // Comment
+Lexer_Token Lexer::comments() noexcept
+{
+	const char* begin = m_begin;
+	
+	// get char
+	get();
+	
+	if (peek() == '/')
+	{
+		get();
+
+		begin = m_begin;
+		while (peek() != '\0')
+		{
+			if (get() == '\n')
+			{
+				return Lexer_Token(Lexer_Token::token_Kind::Comment, begin, distance(begin, m_begin) - 1);
+			}
+		}
+		return Lexer_Token(Lexer_Token::token_Kind::UNEXPECTED, m_begin, 1);
+	}
+	else {
+		return Lexer_Token(Lexer_Token::token_Kind::Comment, begin, 1);
+	}
+}
+
+ostream& operator<<(ostream& os, const Lexer_Token::token_Kind& kind) noexcept
+{
+	// Declare the name for our tokens
+	static const char* const token_Names[] = {
+		"Identifier",
+		"Number",
+		"LPAREN",
+		"RPAREN",
+		"LSQUAREBRAC",
+		"RSQUAREBRAC",
+		"LCURLYBRAC",
+		"RCURLYBRAC",
+		"ARROW_LEFT",
+		"ARROW_RIGHT",
+		"EQUAL",
+		"PLUS",
+		"MINUS",
+		"MULTIPLY",
+		"Comment",
+		"Comma",
+		"Colon",
+		"SemiColon",
+		"DoubleQuote",
+		"SingleQuote",
+		"END",
+		"UNEXPECTED"
+	};
+	return os << token_Names[static_cast<int>(kind)];
+}
+
+
+int main() {
+	auto code =
+		"x = 2.066721823991;\n"
+		"var a = a.b()";
+	
+	Lexer lexer(code);
+	
+	for (auto token = lexer.next_Token();
+		not token.is_One_Of(Lexer_Token::token_Kind::END, Lexer_Token::token_Kind::UNEXPECTED); 
+		token = lexer.next_Token()) {
+		cout << setw(12) << token.kind() << "|" << token.lexeme() << "|\n";
+	}
+}

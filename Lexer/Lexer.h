@@ -23,86 +23,69 @@ int check_Number_Token_Int; // Check Integers like "1"
 class Lexer_Token
 {
 public:
-	virtual ~Lexer_Token();
-	bool filename_Is_Valid(string filename) { }
 	// Create a vector to store the tokens
 	vector<string> Token;
 	// tokenize
 	void tokenize(string filename);
 		
 public:
-	bool is_Space(char c) { }
-	bool is_Digit(char c) { }
-	bool is_Identifier_Char(char c) { }
-	int check_File(bool filename_Is_Valid) {  }
-	int split_Program_To_Tokens() {  }
-		
+	bool is_Space(char c);
+	bool is_Digit(char c);
+	bool is_decimal(char c);
+	bool is_Identifier_Char(char c);
+	int check_File(bool filename_Is_Valid);
+	
 public:
-	enum token_Kind
+	enum class token_Kind
 	{
-	// Identifier
-	token_IDENTIFIER = 0, // identifiers
-	// Numbers
-	token_DIGIT = 1,
-	token_NUM_LITERAL = 2, // Literal
-	token_INTEGER = 3, // Integer
-	// Math Symbols
-	token_LPARENTHE = 4, // (
-	token_RPARENTHE = 5, // )
-	token_LBRACKET = 6, // [
-	token_RBRACKET = 7, // ]
-	token_LCURLYBRAC = 8, // {
-	token_RCURLYBRAC = 9, // }
-	token_EQUAL = 10, // =
-	token_COMMA = 11, // ,
-	token_COLON = 12,// :
-	token_SEMICOLON = 13,// ;
-	token_PLUS = 14,
-	token_MINUS = 15,
-	token_TIMES = 16,
-	token_DIVIDE = 17,
-	token_ARROW = 18, // =>
-	token_DEQ = 19, // ==
-	token_LTH = 20, // <
-	token_RTH = 21, // >
-	token_AND = 22, // &&
-	token_OR = 23, // ||
-	token_NOT = 24, // !
-	// Keywords
-	// Statements
-	token_IF = 25,
-	token_THEN = 26,
-	token_ELSE = 27,
-	token_WHILE = 28,
-	// Int, float
-	token_INT = 29,
-	token_FLOAT = 30,
-	token_DOUBLE = 31,
-	// Bools
-	token_TRUE = 32,
-	token_FALSE = 33,
-	// Classic struct which we all love
-	token_STRUCT = 34,
-	// The classic enum
-	token_ENUM = 35,
-	// Tokens for making a function
-	token_FUNCTION = 36,
-	token_BEGIN = 37,
-	token_END = 38,
-	token_RETURN = 39,
-	// Token for defining a variable
-	token_DEFINE = 40,
-	// Token for importing a file or library
-	token_USING = 41,
-	// string
-	token_QUOTE = 42, // ""
-	// Validate file
-	token_SOF = 43, // start of file
-	token_EOF = 44, // end of file
-	// Error
-	token_ERROR = 45,
-	// Comments
-	token_COMMENT = 46,
+		// Numbers, floats etc
+		Number,
+		// Identifiers
+		Identifier,
+		// String
+		SingleQuote,
+		DoubleQuote,
+		// Brackets
+		LPAREN,
+		RPAREN,
+		LSQUAREBRAC,
+		RSQUAREBRAC,
+		LCURLYBRAC,
+		RCURLYBRAC,
+		// Math Symbols
+		PLUS,
+		MINUS,
+		MULTIPLY,
+		DIVIDE,
+		ARROW_RIGHT, // >
+		ARROW_LEFT, // <
+		EQUAL,
+		PIPE,
+		AND,
+		OR,
+		NOT,
+		DOT,
+		// Keywords
+		IF,
+		THEN,
+		ELSE,
+		WHILE,
+		DEFINE,
+		INT,
+		// Bools
+		TRUE,
+		FALSE,
+		// File
+		SOF,
+		END,
+		// Error
+		UNRECOGNIZED,
+		UNEXPECTED,
+		// Comments
+		Comment,
+		Comma,
+		Colon,
+		SemiColon,
 };
 		
 	Lexer_Token(token_Kind kind) noexcept : m_kind { kind } {}
@@ -115,8 +98,6 @@ public:
 	{
 		return m_kind; 
 	}
-	
-	token_Kind kind() noexcept { return m_kind; }
 	
 	void kind(token_Kind kind) noexcept 
 	{ 
@@ -145,7 +126,7 @@ public:
 	template <typename... Ts>
 	bool is_One_Of(token_Kind k1, token_Kind k2, Ts... ks) const noexcept
 	{
-		return is(k1) || is(k2, ks...);
+		return is(k1) || is_One_Of(k2, ks...);
 	}
 
 	string_view lexeme() const noexcept
@@ -159,20 +140,18 @@ public:
 	}
 
 private:
-	token_Kind m_kind;
-	string_view m_lexeme;
+	token_Kind m_kind{};
+	string_view m_lexeme{};
 };
 
 class Lexer
 {
-public:
-	Lexer(const char* begin) noexcept : m_begin{ begin } {}
+	public:
+	Lexer(const char* begin) noexcept : m_begin{begin} {}
 
 	Lexer_Token next_Token() noexcept;
 	
-	~Lexer();
-	
-private:
+	private:
 	Lexer_Token Identifier() noexcept;
 	
 	Lexer_Token Number() noexcept;
@@ -186,12 +165,12 @@ private:
 		return *m_begin;
 	}
 	
-	char get() const noexcept 
+	char get() noexcept 
 	{
-		return *m_begin;
+		return *m_begin++;
 	}
 
 	const char* m_begin = nullptr; 
-};
+}; 
 
 #endif
