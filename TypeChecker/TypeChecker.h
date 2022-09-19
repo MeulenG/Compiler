@@ -12,4 +12,8 @@ namespace TypeChecker {
 	class TypeChecker;
 };
 
+
+
+
+
 #endif

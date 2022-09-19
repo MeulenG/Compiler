@@ -4,3 +4,4 @@
 
 using namespace std;
 
+// Define the syntax of the language using tokens
