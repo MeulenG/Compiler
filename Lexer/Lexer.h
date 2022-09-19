@@ -1,6 +1,6 @@
 #ifndef LEXER_H
 #define LEXER_H
-
+#include <iomanip>
 #include <iostream>
 #include <cctype>
 #include <cstdio>
@@ -13,164 +13,122 @@
 #include <filesystem>
 #include <fstream>
 
-using namespace std;
-// Global Variables for our Lexer
-string check_String_Token;
-double check_Number_Token; // Check Decimal values like "1.0"
-int check_Number_Token_Int; // Check Integers like "1"
 
-
-class Lexer_Token
-{
+class Token {
 public:
-	// Create a vector to store the tokens
-	vector<string> Token;
-	// tokenize
-	void tokenize(string filename);
-		
+    bool is_Space(char c);
+    bool is_Digit(char c);
+    bool is_Decimal(char c);
+    bool is_Identifier_Char(char c);
+    int check_File(bool filename_Is_Valid);
+
 public:
-	bool is_Space(char c);
-	bool is_Digit(char c);
-	bool is_decimal(char c);
-	bool is_Identifier_Char(char c);
-	int check_File(bool filename_Is_Valid);
-	
-public:
-	enum class token_Kind
-	{
-		// Numbers, floats etc
-		Number,
-		// Identifiers
-		Identifier,
-		// String
-		SingleQuote,
-		DoubleQuote,
-		// Brackets
-		LPAREN,
-		RPAREN,
-		LSQUAREBRAC,
-		RSQUAREBRAC,
-		LCURLYBRAC,
-		RCURLYBRAC,
-		// Math Symbols
-		PLUS,
-		MINUS,
-		MULTIPLY,
-		DIVIDE,
-		ARROW_RIGHT, // >
-		ARROW_LEFT, // <
-		EQUAL,
-		PIPE,
-		AND,
-		OR,
-		NOT,
-		DOT,
-		// Keywords
-		IF,
-		THEN,
-		ELSE,
-		WHILE,
-		DEFINE,
-		INT,
-		// Bools
-		TRUE,
-		FALSE,
-		// File
-		SOF,
-		END,
-		// Error
-		UNRECOGNIZED,
-		UNEXPECTED,
-		// Comments
-		Comment,
-		Comma,
-		Colon,
-		SemiColon,
-};
-		
-	Lexer_Token(token_Kind kind) noexcept : m_kind { kind } {}
+    enum class Kind {
+        Number,
+        Identifier,
+        LeftParen,
+        RightParen,
+        LeftSquare,
+        RightSquare,
+        LeftCurly,
+        RightCurly,
+        LessThan,
+        GreaterThan,
+        Equal,
+        Plus,
+        Minus,
+        Asterisk,
+        Slash,
+        Hash,
+        Dot,
+		Address,
+		Procent,
+		Not,
+        Comma,
+        Colon,
+        Semicolon,
+        SingleQuote,
+        DoubleQuote,
+        Comment,
+        Pipe,
+        End,
+        Unexpected,
+    };
 
-	Lexer_Token(token_Kind kind, const char* begin, size_t len) noexcept : m_kind{kind}, m_lexeme(begin, len) {}
-	
-	Lexer_Token(token_Kind kind, const char* begin, const char* end) noexcept :  m_kind{kind}, m_lexeme(begin, distance(begin, end)) {}
+    Token(Kind kind) noexcept : m_kind{ kind } {}
 
-	token_Kind kind() const noexcept 
-	{
-		return m_kind; 
-	}
-	
-	void kind(token_Kind kind) noexcept 
-	{ 
-		m_kind = kind; 
-	}
-	
-	// Function to if the kind is correct or not
-	bool is(token_Kind kind) const noexcept 
-	{ 
-		return m_kind == kind; 
-	}
-	
-	// Function to if the kind is not correct
-	bool is_not(token_Kind kind) const noexcept 
-	{ 
-		return m_kind != kind;
-	}
-	
-	// Function to tell if the kind is one or the other
-	bool is_One_Of(token_Kind k1, token_Kind k2) const noexcept 
-	{ 
-		return is(k1) || is(k2); 
-	}
+    Token(Kind kind, const char* beg, std::size_t len) noexcept : m_kind{ kind }, m_lexeme(beg, len) {}
 
-	// Template for the kind
-	template <typename... Ts>
-	bool is_One_Of(token_Kind k1, token_Kind k2, Ts... ks) const noexcept
-	{
-		return is(k1) || is_One_Of(k2, ks...);
-	}
+    Token(Kind kind, const char* beg, const char* end) noexcept : m_kind{ kind }, m_lexeme(beg, std::distance(beg, end)) {}
 
-	string_view lexeme() const noexcept
-	{
-		return m_lexeme;
-	}
-	
-	void lexeme(string_view lexeme) noexcept 
-	{
-		m_lexeme = move(lexeme);
-	}
+    Kind kind() const noexcept
+    {
+        return m_kind;
+    }
+
+    void kind(Kind kind) noexcept
+    {
+        m_kind = kind;
+    }
+
+    bool is(Kind kind) const noexcept
+    {
+        return m_kind == kind;
+    }
+
+    bool is_not(Kind kind) const noexcept
+    {
+        return m_kind != kind;
+    }
+
+    bool is_one_of(Kind k1, Kind k2) const noexcept
+    {
+        return is(k1) || is(k2);
+    }
+
+    template <typename... Ts>
+    bool is_one_of(Kind k1, Kind k2, Ts... ks) const noexcept
+    {
+        return is(k1) || is_one_of(k2, ks...);
+    }
+
+    std::string_view lexeme() const noexcept
+    {
+        return m_lexeme;
+    }
+
+    void lexeme(std::string_view lexeme) noexcept
+    {
+        m_lexeme = std::move(lexeme);
+    }
 
 private:
-	token_Kind m_kind{};
-	string_view m_lexeme{};
+    Kind m_kind{};
+    std::string_view m_lexeme{};
 };
 
-class Lexer
-{
-	public:
-	Lexer(const char* begin) noexcept : m_begin{begin} {}
+class Lexer {
+public:
+    Lexer(const char* beg) noexcept : m_beg{ beg } {}
 
-	Lexer_Token next_Token() noexcept;
-	
-	private:
-	Lexer_Token Identifier() noexcept;
-	
-	Lexer_Token Number() noexcept;
-	
-	Lexer_Token comments() noexcept;
-	
-	Lexer_Token atom(Lexer_Token::token_Kind) noexcept;
-	
-	char peek() const noexcept
-	{
-		return *m_begin;
-	}
-	
-	char get() noexcept 
-	{
-		return *m_begin++;
-	}
+    Token next() noexcept;
 
-	const char* m_begin = nullptr; 
-}; 
+private:
+    Token identifier() noexcept;
+    Token number() noexcept;
+    Token slash_or_comment() noexcept;
+    Token tok(Token::Kind) noexcept;
+
+    char peek() const noexcept
+    {
+        return *m_beg;
+    }
+    char get() noexcept
+    {
+        return *m_beg++;
+    }
+
+    const char* m_beg = nullptr;
+};
 
 #endif
