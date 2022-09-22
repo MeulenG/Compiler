@@ -1,5 +1,6 @@
 #ifndef LEXER_H
 #define LEXER_H
+
 #include <iomanip>
 #include <iostream>
 #include <cctype>
@@ -12,16 +13,9 @@
 #include <vector>
 #include <filesystem>
 #include <fstream>
-
+#include <string>
 
 class Token {
-public:
-    bool is_Space(char c);
-    bool is_Digit(char c);
-    bool is_Decimal(char c);
-    bool is_Identifier_Char(char c);
-    int check_File(bool filename_Is_Valid);
-
 public:
     enum class Kind {
         Number,
@@ -41,9 +35,6 @@ public:
         Slash,
         Hash,
         Dot,
-		Address,
-		Procent,
-		Not,
         Comma,
         Colon,
         Semicolon,
@@ -61,13 +52,13 @@ public:
 
     Token(Kind kind, const char* beg, const char* end) noexcept : m_kind{ kind }, m_lexeme(beg, std::distance(beg, end)) {}
 
-    Kind kind() const noexcept
+    Kind kind() const noexcept 
     {
         return m_kind;
     }
 
-    void kind(Kind kind) noexcept
-    {
+    void kind(Kind kind) noexcept 
+    { 
         m_kind = kind;
     }
 
@@ -76,13 +67,13 @@ public:
         return m_kind == kind;
     }
 
-    bool is_not(Kind kind) const noexcept
-    {
+    bool is_not(Kind kind) const noexcept 
+    { 
         return m_kind != kind;
     }
 
     bool is_one_of(Kind k1, Kind k2) const noexcept
-    {
+    { 
         return is(k1) || is(k2);
     }
 
@@ -93,7 +84,7 @@ public:
     }
 
     std::string_view lexeme() const noexcept
-    {
+    { 
         return m_lexeme;
     }
 
@@ -103,7 +94,7 @@ public:
     }
 
 private:
-    Kind m_kind{};
+    Kind             m_kind{};
     std::string_view m_lexeme{};
 };
 
@@ -119,12 +110,12 @@ private:
     Token slash_or_comment() noexcept;
     Token tok(Token::Kind) noexcept;
 
-    char peek() const noexcept
-    {
+    char peek() const noexcept 
+    { 
         return *m_beg;
     }
-    char get() noexcept
-    {
+    char get() noexcept 
+    { 
         return *m_beg++;
     }
 

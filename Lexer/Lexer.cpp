@@ -1,7 +1,7 @@
-#include <string>
 #include "Lexer.h"
 
-bool is_Space(char c) noexcept {
+bool is_space(char c) noexcept
+{
     switch (c) {
     case ' ':
     case '\t':
@@ -13,7 +13,8 @@ bool is_Space(char c) noexcept {
     }
 }
 
-bool is_Digit(char c) noexcept {
+bool is_digit(char c) noexcept
+{
     switch (c) {
     case '0':
     case '1':
@@ -31,7 +32,9 @@ bool is_Digit(char c) noexcept {
     }
 }
 
-bool is_Decimal(char c) noexcept {
+
+bool is_Decimal(char c) noexcept
+{
     switch (c) {
     case '.':
         return true;
@@ -40,8 +43,8 @@ bool is_Decimal(char c) noexcept {
     }
 }
 
-
-bool is_Identifier_Char(char c) noexcept {
+bool is_identifier_char(char c) noexcept
+{
     switch (c) {
     case 'a':
     case 'b':
@@ -112,14 +115,13 @@ bool is_Identifier_Char(char c) noexcept {
     }
 }
 
-Token Lexer::tok(Token::Kind kind) noexcept
-{
+Token Lexer::tok(Token::Kind kind) noexcept 
+{ 
     return Token(kind, m_beg++, 1);
 }
 
-Token Lexer::next() noexcept 
-{
-    while (is_Space(peek())) get();
+Token Lexer::next() noexcept {
+    while (is_space(peek())) get();
 
     switch (peek()) {
     case '\0':
@@ -232,41 +234,36 @@ Token Lexer::next() noexcept
         return tok(Token::Kind::DoubleQuote);
     case '|':
         return tok(Token::Kind::Pipe);
-    case '&':
-        return tok(Token::Kind::Address);
-    case '%':
-        return tok(Token::Kind::Procent);
-    case '!':
-        return tok(Token::Kind::Not);
     }
 }
 
-Token Lexer::identifier() noexcept {
+Token Lexer::identifier() noexcept
+{
     const char* start = m_beg;
     get();
-    while (is_Identifier_Char(peek())) get();
+    while (is_identifier_char(peek())) get();
     return Token(Token::Kind::Identifier, start, m_beg);
 }
 
-// Name confusing compared to what function does, fix
 Token Lexer::number() noexcept
 {
     const char* start = m_beg;
     get();
-    while (is_Digit(peek()) || is_Decimal(peek())) get();
+    while (is_digit(peek()) || is_Decimal(peek())) get();
     return Token(Token::Kind::Number, start, m_beg);
 }
 
-
-// Name is confusing, just call it for_Comments or somthing
-Token Lexer::slash_or_comment() noexcept {
+Token Lexer::slash_or_comment() noexcept 
+{
     const char* start = m_beg;
     get();
     if (peek() == '/') {
         get();
         start = m_beg;
-        while (peek() != '\0') {
-            if (get() == '\n') {
+        while (peek() != '\0') 
+        {
+            if (get() == '\n') 
+            {
                 return Token(Token::Kind::Comment, start,
                     std::distance(start, m_beg) - 1);
             }
@@ -277,9 +274,10 @@ Token Lexer::slash_or_comment() noexcept {
         return Token(Token::Kind::Slash, start, 1);
     }
 }
-// Extend 
-std::ostream& operator<<(std::ostream& os, const Token::Kind& kind) {
-    static const char* const names[] = {
+
+std::ostream& operator<<(std::ostream& os, const Token::Kind& kind)
+{
+    static const char* const names[]{
         "Number",      "Identifier",  "LeftParen",  "RightParen", "LeftSquare",
         "RightSquare", "LeftCurly",   "RightCurly", "LessThan",   "GreaterThan",
         "Equal",       "Plus",        "Minus",      "Asterisk",   "Slash",
@@ -290,13 +288,12 @@ std::ostream& operator<<(std::ostream& os, const Token::Kind& kind) {
     return os << names[static_cast<int>(kind)];
 }
 
-int main() {
+int main()
+{
     auto code =
-        "x = 2.5;\n"
-        "define int a = 4;\n"
-        "define int b = 5;\n"
-        "c = a + b;\n";\
-		
+        "x = 2;\n"
+        "// This is a comment\n"
+        "define int a = 15;\n";
 
     Lexer lex(code);
     for (auto token = lex.next();
