@@ -237,6 +237,28 @@ Token Lexer::next() noexcept {
     }
 }
 
+//std::map<Token::Kind, char> token_Kind_To_Char {
+//    {Token::Kind::Plus, '+'},
+//    {Token::Kind::Minus, '-'},
+//    {Token::Kind::Asterisk, '*'},
+//    {Token::Kind::Slash, '/'},
+//    {Token::Kind::LeftParen, '('},
+//    {Token::Kind::RightParen, ')'},
+//    {Token::Kind::LeftSquare, '['},
+//    {Token::Kind::RightSquare, ']'},
+//    {Token::Kind::LeftCurly, '{'},
+//    {Token::Kind::RightCurly, '}'},
+//    {Token::Kind::Equal, '='},
+//    {Token::Kind::Comma, ','},
+//    {Token::Kind::Colon, ':'},
+//    {Token::Kind::Semicolon, ';'},
+//    {Token::Kind::LessThan, '<'},
+//    {Token::Kind::GreaterThan, '>'},
+//    {Token::Kind::Not, '!'},
+//    {Token::Kind::And, '&'},
+//    {Token::Kind::Pipe, '|'},
+//};
+
 Token Lexer::identifier() noexcept
 {
     const char* start = m_beg;
@@ -275,15 +297,15 @@ Token Lexer::slash_or_comment() noexcept
     }
 }
 
-std::ostream& operator<<(std::ostream& os, const Token::Kind& kind)
+std::ostream& operator<<(std::ostream& os, const Token::Kind &kind)
 {
     static const char* const names[]{
         "Number",      "Identifier",  "LeftParen",  "RightParen", "LeftSquare",
         "RightSquare", "LeftCurly",   "RightCurly", "LessThan",   "GreaterThan",
-        "Equal",       "Plus",        "Minus",      "Asterisk",   "Slash",
-        "Hash",        "Dot",         "Comma",      "Colon",      "Semicolon",
-        "SingleQuote", "DoubleQuote", "Comment",    "Pipe",       "End",
-        "Unexpected",
+        "Equal",       "Plus",        "Minus",      "Not",        "And",
+        "Define",      "Asterisk",    "Slash",      "Hash",       "Dot",         
+        "Comma",       "Colon",       "Semicolon",  "SingleQuote", 
+        "DoubleQuote", "Comment",     "Pipe",       "End",        "Unexpected",
     };
     return os << names[static_cast<int>(kind)];
 }
@@ -299,7 +321,6 @@ int main()
     for (auto token = lex.next();
         not token.is_one_of(Token::Kind::End, Token::Kind::Unexpected);
         token = lex.next()) {
-        std::cout << std::setw(12) << token.kind() << " |" << token.lexeme()
-            << "|\n";
+        std::cout << std::setw(12) << token.kind() << " |" << token.lexeme() << "|\n";
     }
 }
