@@ -180,7 +180,7 @@ Token Lexer::next() noexcept {
     case 'X':
     case 'Y':
     case 'Z':
-        return identifier();
+        return identify_Identifier();
     case '0':
     case '1':
     case '2':
@@ -191,7 +191,7 @@ Token Lexer::next() noexcept {
     case '7':
     case '8':
     case '9':
-        return number();
+        return identify_Number();
     case '(':
         return tok(Token::Kind::LeftParen);
     case ')':
@@ -217,7 +217,7 @@ Token Lexer::next() noexcept {
     case '*':
         return tok(Token::Kind::Asterisk);
     case '/':
-        return slash_or_comment();
+        return identify_Slash_Or_Comment();
     case '#':
         return tok(Token::Kind::Hash);
     case '.':
@@ -259,7 +259,7 @@ Token Lexer::next() noexcept {
 //    {Token::Kind::Pipe, '|'},
 //};
 
-Token Lexer::identifier() noexcept
+Token Lexer::identify_Identifier() noexcept
 {
     const char* start = m_beg;
     get();
@@ -267,7 +267,7 @@ Token Lexer::identifier() noexcept
     return Token(Token::Kind::Identifier, start, m_beg);
 }
 
-Token Lexer::number() noexcept
+Token Lexer::identify_Number() noexcept
 {
     const char* start = m_beg;
     get();
@@ -275,7 +275,8 @@ Token Lexer::number() noexcept
     return Token(Token::Kind::Number, start, m_beg);
 }
 
-Token Lexer::slash_or_comment() noexcept 
+
+Token Lexer::identify_Slash_Or_Comment() noexcept 
 {
     const char* start = m_beg;
     get();
@@ -297,15 +298,17 @@ Token Lexer::slash_or_comment() noexcept
     }
 }
 
+
 std::ostream& operator<<(std::ostream& os, const Token::Kind &kind)
 {
     static const char* const names[]{
-        "Number",      "Identifier",  "LeftParen",  "RightParen", "LeftSquare",
-        "RightSquare", "LeftCurly",   "RightCurly", "LessThan",   "GreaterThan",
-        "Equal",       "Plus",        "Minus",      "Not",        "And",
-        "Define",      "Asterisk",    "Slash",      "Hash",       "Dot",         
-        "Comma",       "Colon",       "Semicolon",  "SingleQuote", 
-        "DoubleQuote", "Comment",     "Pipe",       "End",        "Unexpected",
+        "Number",      "Identifier",   "Keyword",
+        "LeftParen",   "RightParen",   "LeftSquare", "RightSquare", "LeftCurly",    "RightCurly",
+        "LessThan",    "GreaterThan",   "Equal",     "Plus",      "Minus",      "Asterisk",     "Slash",    "Hash",     "Dot",      "Not",      "And",      "Comma",        "Pipe",
+        "Colon",       "Semicolon",  
+        "SingleQuote", "DoubleQuote", 
+        "Comment",            
+        "End",        "Unexpected",
     };
     return os << names[static_cast<int>(kind)];
 }

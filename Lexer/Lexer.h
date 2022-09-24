@@ -20,6 +20,7 @@ public:
     enum class Kind {
         Number,
         Identifier,
+        Keyword,
         LeftParen,
         RightParen,
         LeftSquare,
@@ -37,14 +38,13 @@ public:
         Dot,
         Not,
         And,
-        Define,
         Comma,
+        Pipe,
         Colon,
         Semicolon,
         SingleQuote,
         DoubleQuote,
         Comment,
-        Pipe,
         End,
         Unexpected,
     };
@@ -108,17 +108,18 @@ public:
     Token next() noexcept;
 
 private:
-    Token identifier() noexcept;
-    Token number() noexcept;
-    Token slash_or_comment() noexcept;
+    Token identify_Identifier() noexcept;
+    Token identify_Number() noexcept;
+    Token identify_Slash_Or_Comment() noexcept;
+    Token identify_Keyword() noexcept;
     Token tok(Token::Kind) noexcept;
 
-    char peek() const noexcept 
-    { 
+    char peek() const noexcept
+    {
         return *m_beg;
     }
-    char get() noexcept 
-    { 
+    char get() noexcept
+    {
         return *m_beg++;
     }
 
