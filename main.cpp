@@ -1,48 +1,60 @@
 // Preprocess Directives
-#include "Ast/Ast.h"
-#include "CodeGen/CodeGen.h"
-#include "Compiler/Compiler.h"
+//#include "Ast/Ast.h"
+//#include "CodeGen/CodeGen.h"
+//#include "Compiler/Compiler.h"
 #include "Lexer/Lexer.h"
-#include "Lexer/Syntax.h"
-#include "Parser/Parser.h"
-#include "TypeChecker/TypeChecker.h"
-#include <llvm/ADT/APFloat.h>
-#include <llvm/IR/IRBuilder.h>
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <streambuf>
+//#include "Lexer/Syntax.h"
+//#include "Parser/Parser.h"
+//#include "TypeChecker/TypeChecker.h"
+//#include <llvm/ADT/APFloat.h>
+//#include <llvm/IR/IRBuilder.h>
 #include <filesystem>
-
-using namespace std;
-
+#ifdef __TRACE
+#define TRACE(...) printf(__VA_ARGS__)
+#else
+#define TRACE
+#endif
 
 int main(int argc, char* argv[])
 {
-    string filename = argv[1]; // argv[0] is the program name
-    ifstream input; // input from the file
-
-	// get filename from path
-	filesystem::path path(filename);
+    // Error handling
+    if (argc == 1)
+    {
+        printf("Error: invalid number of arguments, please specify your file name\n");
+        return -1;
+    }
+    // read the file given in the first argument
+    std::ifstream f(argv[1]); //taking file as inputstream
+    std::string str;
+    // get filename from path
+    std::filesystem::path path(argv[1]);
     path.filename();
-
-    input.open(filename);
-    // Check input parameters
-    if (argc == 1) {
-        printf("Warning: invalid number of arguments\n");
-        return -1;
+    // Read file and save it in string variable
+    if (f) {
+        std::ostringstream ss;
+        ss << f.rdbuf(); // reading data
+        str = ss.str();
     }
-    else if (!input.is_open()) {
-        cout << "Unable to open file";
-        return -1;
+    // Lexical Analysis
+    // Convert string to const char*
+    auto code = str.c_str();
+    
+    // Instansiate Lexer
+    Lexer lex(code);
+    // Make sure that tokens we read are not EOF else we just spit it out
+    for (auto tokens = lex.next(); not tokens.is_one_of(Token::Kind::End, Token::Kind::Unexpected); tokens = lex.next())
+    {
+        TRACE("tokens.lexeme() = %s", tokens.lexeme());
+        std::cout << static_cast<int>(tokens.kind()) << " | " << tokens.lexeme() << "\n";
     }
-    else {
-        while (input)
-        {
-            string line;
-            getline(input, line);
-            cout << line << '\n';
-        }
-}
-    input.close();
-
-    // Convert program to tokens
+    return 0;
 
     // TypeCheck first?
 
@@ -53,6 +65,4 @@ int main(int argc, char* argv[])
     // Convert to Machine Code
 
     // Spit out the binary
-
-	return 0;
 }

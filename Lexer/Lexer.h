@@ -103,6 +103,7 @@ private:
 
 class Lexer {
 public:
+    std::string recognize_Keyword;
     Lexer(const char* beg) noexcept : m_beg{ beg } {}
 
     Token next() noexcept;

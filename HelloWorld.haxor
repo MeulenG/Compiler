@@ -1,16 +1,25 @@
 begin HelloWorld.haxor
 
-using System;
+begin function hello_World() 
+{ 
+	begin if (2<4)
+	{
+	print("Hello, World!"); 
+	}
+	end
+}
 
-begin function hello_World() {
-    
-    begin if (2<4) {
-	print("Hello, World!");
-    } end
+begin main() 
+{
+	call hello_World();
+	define int a = 10;
+	define int b = 20;
+	c = a + b;
+	print(c);
+
+	define string myStr = "Lord of the rings is apparently a bad series according to many";
+	print(myStr);
 } end
 
-begin main() {
-    call function();
-} end
 
-end
+end HelloWorld.haxor

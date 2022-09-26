@@ -1,5 +1,8 @@
 #include "Lexer.h"
 
+
+
+
 bool is_space(char c) noexcept
 {
     switch (c) {
@@ -234,6 +237,8 @@ Token Lexer::next() noexcept {
         return tok(Token::Kind::DoubleQuote);
     case '|':
         return tok(Token::Kind::Pipe);
+    case '!':
+        return tok(Token::Kind::Not);
     }
 }
 
@@ -298,32 +303,16 @@ Token Lexer::identify_Slash_Or_Comment() noexcept
     }
 }
 
-
-std::ostream& operator<<(std::ostream& os, const Token::Kind &kind)
+std::ostream& operator<<(std::ostream& os, const Token::Kind& kind)
 {
     static const char* const names[]{
         "Number",      "Identifier",   "Keyword",
         "LeftParen",   "RightParen",   "LeftSquare", "RightSquare", "LeftCurly",    "RightCurly",
         "LessThan",    "GreaterThan",   "Equal",     "Plus",      "Minus",      "Asterisk",     "Slash",    "Hash",     "Dot",      "Not",      "And",      "Comma",        "Pipe",
-        "Colon",       "Semicolon",  
-        "SingleQuote", "DoubleQuote", 
-        "Comment",            
+        "Colon",       "Semicolon",
+        "SingleQuote", "DoubleQuote",
+        "Comment",
         "End",        "Unexpected",
     };
     return os << names[static_cast<int>(kind)];
-}
-
-int main()
-{
-    auto code =
-        "x = 2;\n"
-        "// This is a comment\n"
-        "define int a = 15;\n";
-
-    Lexer lex(code);
-    for (auto token = lex.next();
-        not token.is_one_of(Token::Kind::End, Token::Kind::Unexpected);
-        token = lex.next()) {
-        std::cout << std::setw(12) << token.kind() << " |" << token.lexeme() << "|\n";
-    }
 }
