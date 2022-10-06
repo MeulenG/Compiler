@@ -16,6 +16,8 @@
 //#include <llvm/ADT/APFloat.h>
 //#include <llvm/IR/IRBuilder.h>
 #include <filesystem>
+
+// Macro
 #ifdef __TRACE
 #define TRACE(...) printf(__VA_ARGS__)
 #else
@@ -38,25 +40,28 @@ int main(int argc, char* argv[])
     path.filename();
     // Read file and save it in string variable
     if (f) {
-        std::ostringstream ss;
-        ss << f.rdbuf(); // reading data
-        str = ss.str();
+        std::ostringstream string_Stream_File;
+        string_Stream_File << f.rdbuf(); // reading data
+        str = string_Stream_File.str();
     }
     // Lexical Analysis
     // Convert string to const char*
     auto code = str.c_str();
-    
+    // Token List
+    std::list<Token::Kind> token_List = {};
+
     // Instansiate Lexer
     Lexer lex(code);
     // Make sure that tokens we read are not EOF else we just spit it out
     for (auto tokens = lex.next(); not tokens.is_one_of(Token::Kind::End, Token::Kind::Unexpected); tokens = lex.next())
     {
         TRACE("tokens.lexeme() = %s", tokens.lexeme());
-        std::cout << static_cast<int>(tokens.kind()) << " | " << tokens.lexeme() << "\n";
+        std::cout << static_cast<int>(tokens.kind()) << "|" << tokens.lexeme() << "\n";
+        token_List.push_back(tokens.kind());
     }
     return 0;
 
-    // TypeCheck first?
+    // TypeCheck first, but I think we might do that shit in the AST too, not quite yet sure
 
     // Parse tokens
 

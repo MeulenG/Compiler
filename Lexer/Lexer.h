@@ -7,6 +7,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <map>
+#include <unordered_map>
 #include <memory>
 #include <string>
 #include <utility>
@@ -14,10 +15,12 @@
 #include <filesystem>
 #include <fstream>
 #include <string>
+#include <regex>
 
 class Token {
 public:
     enum class Kind {
+        Decimal_Number,
         Number,
         Identifier,
         Keyword,

@@ -1,8 +1,5 @@
 #include "Lexer.h"
 
-
-
-
 bool is_space(char c) noexcept
 {
     switch (c) {
@@ -242,28 +239,6 @@ Token Lexer::next() noexcept {
     }
 }
 
-//std::map<Token::Kind, char> token_Kind_To_Char {
-//    {Token::Kind::Plus, '+'},
-//    {Token::Kind::Minus, '-'},
-//    {Token::Kind::Asterisk, '*'},
-//    {Token::Kind::Slash, '/'},
-//    {Token::Kind::LeftParen, '('},
-//    {Token::Kind::RightParen, ')'},
-//    {Token::Kind::LeftSquare, '['},
-//    {Token::Kind::RightSquare, ']'},
-//    {Token::Kind::LeftCurly, '{'},
-//    {Token::Kind::RightCurly, '}'},
-//    {Token::Kind::Equal, '='},
-//    {Token::Kind::Comma, ','},
-//    {Token::Kind::Colon, ':'},
-//    {Token::Kind::Semicolon, ';'},
-//    {Token::Kind::LessThan, '<'},
-//    {Token::Kind::GreaterThan, '>'},
-//    {Token::Kind::Not, '!'},
-//    {Token::Kind::And, '&'},
-//    {Token::Kind::Pipe, '|'},
-//};
-
 Token Lexer::identify_Identifier() noexcept
 {
     const char* start = m_beg;
@@ -301,18 +276,4 @@ Token Lexer::identify_Slash_Or_Comment() noexcept
     else {
         return Token(Token::Kind::Slash, start, 1);
     }
-}
-
-std::ostream& operator<<(std::ostream& os, const Token::Kind& kind)
-{
-    static const char* const names[]{
-        "Number",      "Identifier",   "Keyword",
-        "LeftParen",   "RightParen",   "LeftSquare", "RightSquare", "LeftCurly",    "RightCurly",
-        "LessThan",    "GreaterThan",   "Equal",     "Plus",      "Minus",      "Asterisk",     "Slash",    "Hash",     "Dot",      "Not",      "And",      "Comma",        "Pipe",
-        "Colon",       "Semicolon",
-        "SingleQuote", "DoubleQuote",
-        "Comment",
-        "End",        "Unexpected",
-    };
-    return os << names[static_cast<int>(kind)];
 }

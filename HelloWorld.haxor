@@ -16,6 +16,7 @@ begin main()
 	define int b = 20;
 	c = a + b;
 	print(c);
+	define int d = 2.0123
 
 	define string myStr = "Lord of the rings is apparently a bad series according to many";
 	print(myStr);

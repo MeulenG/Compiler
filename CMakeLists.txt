@@ -1,37 +1,41 @@
 ﻿# CMakeList.txt : Top-level CMake project file, do global configuration
 # and include sub-projects here.
 #
-cmake_minimum_required (VERSION 3.8)
+CMAKE_MINIMUM_REQUIRED (VERSION 3.8)
 
-project ("HaxorCompiler")
+PROJECT("HaxorCompiler")
 
-set(CMAKE_CXX_STANDARD 20)
-set(BUILD_ARCH "-m64")
-set(TARGET_64 ON)
-set (C_COMPILER clang++)
-set (C_FLAGS -g -O3)
+SET(CMAKE_CXX_STANDARD 20)
+SET(BUILD_ARCH "-m64")
+SET(TARGET_64 ON)
+SET (C_COMPILER clang++)
+SET (C_FLAGS -g -O3)
 #Packages
-find_package(LLVM REQUIRED CONFIG)
+FIND_PACKAGE(LLVM REQUIRED CONFIG)
 
-message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
-message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
+MESSAGE(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
+MESSAGE(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
 
 
-add_executable(${PROJECT_NAME} main.cpp )
+ADD_EXECUTABLE(${PROJECT_NAME} main.cpp )
 
-# Set your project compile flags.
-# E.g. if using the C++ header files
-# you will need to enable C++11 support
-# for your compiler.
-include_directories(${LLVM_INCLUDE_DIRS})
-separate_arguments(LLVM_DEFINITIONS_LIST NATIVE_COMMAND ${LLVM_DEFINITIONS})
-add_definitions(${LLVM_DEFINITIONS_LIST})
+INCLUDE_DIRECTORIES(${LLVM_INCLUDE_DIRS})
+SEPARATE_ARGUMENTS(LLVM_DEFINITIONS_LIST NATIVE_COMMAND ${LLVM_DEFINITIONS})
+ADD_DEFINITIONS(${LLVM_DEFINITIONS_LIST})
+
+SET(DIRECTORIES_SRC
+	Lexer
+)
 
 # Include sub-projects.
+MESSAGE(STATUS "Compiling Directories: 
+				${DIRECTORIES_SRC}")
+
 #add_subdirectory (Ast)
 #add_subdirectory (CodeGen)
 #add_subdirectory (Compiler)
 add_subdirectory (Lexer)
+
 #add_subdirectory (Parser)
 #add_subdirectory (TypeChecker)
 
@@ -40,7 +44,7 @@ add_subdirectory (Lexer)
 
 # Find the libraries that correspond to the LLVM components
 # that we wish to use
-llvm_map_components_to_libnames(llvm_libs
+LLVM_MAP_COMPONENTS_TO_LIBNAMES(llvm_libs
 	aarch64asmparser 
 	aarch64codegen 
 	aarch64desc 
@@ -203,4 +207,4 @@ llvm_map_components_to_libnames(llvm_libs
 )
 
 
-target_link_libraries(${PROJECT_NAME} Lexer ${llvm_libs})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} Lexer ${llvm_libs})
