@@ -1,5 +1,6 @@
 #ifndef PARSER_H
 #define PARSER_H 
+#include "../Lexer/Lexer.h"
 
 class Parser
 {
@@ -9,18 +10,21 @@ public:
 	~Parser();
 	
 private:
+    Token current_Token() noexcept;
+    Token get_Next_Token() noexcept;
+    Token get_Precedence() noexcept;
+    Token install_BinOP_Precedence() noexcept;
+    char peek() const noexcept
+    {
+        return *m_beg;
+    }
+    char get() noexcept
+    {
+        return *m_beg++;
+    }
 
+    const char* m_beg = nullptr;
 };
-
-Parser::Parser()
-{
-
-}
-
-Parser::~Parser()
-{
-	
-}
 
 
 

@@ -8,43 +8,56 @@ using namespace std;
 
 Lexer lex;
 
-// List of tokens
-for (auto& itera : token_List)
+// Gets the next token
+Token Parser::get_Next_Token() noexcept 
 {
-	std::cout << static_cast<int>(itera) << std::endl;
+	peek();
+	get();
 }
-
-
-// Curtok/getNextToken. Curtok is the current token the parser is looking at. getNextToken reads another token from the Lexer and updates Curtok.
-int current_token;
-int getNextToken() 
+// Holds our current token
+Token Parser::current_Token() noexcept 
 {
-	return current_token = lex.next();
+	lex.next();
 }
 
 // Map Precedence for binary operators.
-map<char, int> op_Precedence = 
+std::map<int, Token::Kind> op_Precedence = 
 {
-	{'=', 1},
-	{'<', 2},
-	{'>', 2},
-	{'+', 3},
-	{'-', 3},
-	{'*', 4},
-	{'/', 4}
+	{1, Token::Kind::Equal},
+	{2, Token::Kind::LessThan},
+	{2, Token::Kind::GreaterThan},
+	{3, Token::Kind::Plus},
+	{3, Token::Kind::Minus},
+	{4, Token::Kind::Asterisk},
+	{4, Token::Kind::Slash}
+//	{'=', 1},
+//	{'<', 2},
+//	{'>', 2},
+//	{'+', 3},
+//	{'-', 3},
+//	{'*', 4},
+//	{'/', 4}
 };
+
+Token Parser::install_BinOP_Precedence() noexcept 
+{
+	if (op_Precedence > op_Precedence.count(get_Next_Token()))
+	{
+
+	}
+}
 
 
 // Function to determine the precedence of the current token.
-int getPrecedence() 
+Token Parser::get_Precedence() noexcept
 {
 	// If current tokens precedence is greater than the next operators token, we keep
-	if (op_Precedence.count(current_token) > getNextToken())
+	if (op_Precedence.count(current_Token()) > op_Precedence.count(get_Next_Token()))
 	{
-		return current_token;
+		return current_Token();
 	}
 	// Else fuck our current token, we take the next
-	return getNextToken();
+	return get_Next_Token();
 }
 
 
@@ -52,7 +65,11 @@ int getPrecedence()
 unique_ptr<Expression> ParseLiteralNumExpre()
 {
 	double num_Literal;
-	num_Literal;
+	num_Literal = static_cast<int>(Token::Kind::Number);
+	if (Lexer::token_List.contains(num_Literal) != Lexer::token_List.end())
+	{
+		return -1;
+	}
 	auto result = make_unique<decimal_Number_Expression>(num_Literal);
 	getNextToken();
 	return move(result);
@@ -62,14 +79,19 @@ unique_ptr<Expression> ParseLiteralNumExpre()
 unique_ptr<Expression> ParseIntegersExpre() 
 {
 	int num_Int;
-	num_Int = check_Number_Token_Int; // get the integer number from the Lexer
+	num_Int = static_cast<int>(Token::Kind::Number);
+	if (Lexer::token_List.find(num_Int) != Lexer::token_List.end())
+	{
+		return -1;
+	}
 	auto result = make_unique<decimal_Number_Expression>(num_Int);
 	getNextToken();
 	return move(result);
 }
 
 // parenexpr := '(' expression ')'
-unique_ptr<Expression> ParseParentExpre() {
+unique_ptr<Expression> ParseParentExpre() 
+{
 	// Make an instance of ParseExpression
 	unique_ptr<Expression> ParseExpression();
 	// Eat '('
@@ -88,9 +110,10 @@ unique_ptr<Expression> ParseParentExpre() {
 }
 
 // identifier-expression
-unique_ptr<Expression> ParseIdentifierExpre() {
+unique_ptr<Expression> ParseIdentifierExpre() 
+{
 	// Initialize variables
-	const string identifier_Name = check_String_Token;
+	const string identifier_Name = lex.next();
 	unique_ptr<Expression> ParseExpression();
 
 	getNextToken(); // Eat Identifier
@@ -130,7 +153,8 @@ unique_ptr<Expression> ParseIdentifierExpre() {
 }
 
 // Primary
-unique_ptr<Expression> ParsePrimary() {
+unique_ptr<Expression> ParsePrimary() 
+{
 	switch (current_token)
 	{
 	case '(':
@@ -148,7 +172,8 @@ unique_ptr<Expression> ParsePrimary() {
 }
 
 // Parse Binary Operators
-unique_ptr<Expression> ParseBinaryOpRHS(int expr_Precedence, unique_ptr<Expression> LHS) {
+unique_ptr<Expression> ParseBinaryOpRHS(int expr_Precedence, unique_ptr<Expression> LHS) 
+{
 	// If this is a binop, find its precedence.
 	while (true)
 	{
@@ -187,7 +212,8 @@ unique_ptr<Expression> ParseBinaryOpRHS(int expr_Precedence, unique_ptr<Expressi
 }
 
 // Parse Expression lhs
-unique_ptr<Expression> ParseExpression() {
+unique_ptr<Expression> ParseExpression() 
+{
 	auto lhs = ParsePrimary();
 	
 	if (!lhs)
@@ -198,9 +224,10 @@ unique_ptr<Expression> ParseExpression() {
 }
 
 // Parse Prototype
-unique_ptr<Prototype> ParsePrototype() {
+unique_ptr<Prototype> ParsePrototype() 
+{
 	// Initialize variables
-	const string identifier_Name = check_String_Token;
+	const string identifier_Name = Lexer::next();
 	getNextToken(); // Eat Identifier
 
 	if (current_token != '(')
@@ -223,7 +250,8 @@ unique_ptr<Prototype> ParsePrototype() {
 }
 
 // Parse Function
-unique_ptr<FunctionDefinition> ParseFunction() {
+unique_ptr<FunctionDefinition> ParseFunction() 
+{
 	getNextToken(); // Eat 'begin'
 	getNextToken(); // Eat 'function'
 	auto proto = ParsePrototype();
