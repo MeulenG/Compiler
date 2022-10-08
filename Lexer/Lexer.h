@@ -16,6 +16,7 @@
 #include <fstream>
 #include <string>
 #include <regex>
+#include <algorithm>
 
 class Token {
 public:
@@ -98,6 +99,7 @@ public:
     {
         m_lexeme = std::move(lexeme);
     }
+    std::list<Token::Kind> token_List = {};
 
 private:
     Kind             m_kind{};
@@ -107,6 +109,7 @@ private:
 class Lexer {
 public:
     std::string recognize_Keyword;
+    std::list<Token::Kind> token_List = {};
     Lexer(const char* beg) noexcept : m_beg{ beg } {}
 
     Token next() noexcept;

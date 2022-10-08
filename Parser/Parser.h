@@ -14,6 +14,9 @@ private:
     Token get_Next_Token() noexcept;
     Token get_Precedence() noexcept;
     Token install_BinOP_Precedence() noexcept;
+    Token parse_Num_Literals() noexcept;
+
+
     char peek() const noexcept
     {
         return *m_beg;
